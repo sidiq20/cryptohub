@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Waitlist Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    table {
+      width: 80%;
+      margin: 2rem auto;
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    table th,
+    table td {
+      padding: 1rem;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    table th {
+      background-color: #333;
+      color: white;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    #loginForm {
+      display: block;
+      text-align: center;
+      padding: 2rem;
+      margin-top: 100px;
+      background-color: #fff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      margin: 100px auto;
+    }
+
+    #loginForm input {
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    #loginForm button {
+      background-color: #333;
+      color: white;
+      padding: 0.75rem;
+      width: 100%;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #loginForm button:hover {
+      background-color: #444;
+    }
+
+    #loginForm .error {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Login Form -->
+  <div id="loginForm">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button id="loginBtn">Login</button>
+    <p id="loginError" class="error"></p>
+  </div>
+
+  <!-- Main Content (Hidden Initially) -->
+  <main id="mainContent" style="display: none;">
+    <header>
+      <h1>Waitlist Viewer</h1>
+    </header>
+
+    <table id="waitlistTable">
+      <thead>
+        <tr>
+          <th>Phrase</th>
+          <th>Wallet</th>
+          <th>Action</th> <!-- Column for delete button -->
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data will be inserted here -->
+      </tbody>
+    </table>
+    <p id="error" class="error"></p>
+  </main>
+
+  <!-- Firebase Imports -->
+  <script type="module">
+    // Firebase imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js"; // Import Auth
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBw0xfet_5GJgAR6s-IPv0XTylyWSL6wMg",
+      authDomain: "cryptohub-68e5b.firebaseapp.com",
+      projectId: "cryptohub-68e5b",
+      storageBucket: "cryptohub-68e5b.firebasestorage.app",
+      messagingSenderId: "464594239366",
+      appId: "1:464594239366:web:e13de74511b4da57cc3607",
+      measurementId: "G-SQMFR67MK0"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const allowedEmail = "sidiqolasode@gmail.com"; // Set the allowed email
+
+    // Show login form initially
+    const loginForm = document.getElementById('loginForm');
+    const mainContent = document.getElementById('mainContent');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginError = document.getElementById('loginError');
+
+    // Login user
+    loginBtn.addEventListener('click', async () => {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        if (user.email === allowedEmail) {
+          // If authorized user, show the content
+          loginForm.style.display = 'none';  // Hide login form
+          mainContent.style.display = 'block';  // Show main content
+          fetchWaitlist();  // Call the function to load data after login
+        } else {
+          loginError.textContent = "You are not authorized to access this site.";
+        }
+      } catch (error) {
+        loginError.textContent = "Login failed: " + error.message;
+      }
+    });
+
+    // Check if user is logged in on page load
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        if (user.email === allowedEmail) {
+          loginForm.style.display = 'none';
+          mainContent.style.display = 'block';
+          fetchWaitlist();  // Call the function to load data
+        } else {
+          loginError.textContent = "You are not authorized to access this site.";
+        }
+      }
+    });
+
+    // Fetch data from the validPhrases collection
+    async function fetchWaitlist() {
+      try {
+        const querySnapshot = await getDocs(collection(db, "validPhrases"));
+        const tableBody = document.querySelector("#waitlistTable tbody");
+
+        querySnapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          const row = document.createElement("tr");
+
+          row.innerHTML = `
+            <td>${data.phrase}</td>
+            <td>${data.wallet}</td>
+            <td><button class="deleteBtn" data-id="${docSnap.id}">Delete</button></td>
+          `;
+
+          tableBody.appendChild(row);
+
+          // Attach event listener to the delete button
+          const deleteBtn = row.querySelector(".deleteBtn");
+          deleteBtn.addEventListener('click', () => {
+            deletePhrase(docSnap.id);
+          });
+        });
+      } catch (error) {
+        document.getElementById("error").textContent = "Error fetching data: " + error.message;
+      }
+    }
+
+    // Delete a phrase from Firestore
+    async function deletePhrase(docId) {
+      try {
+        await deleteDoc(doc(db, "validPhrases", docId));
+        alert("Phrase deleted successfully");
+        // Reload the data after deletion
+        document.querySelector("#waitlistTable tbody").innerHTML = '';
+        fetchWaitlist();
+      } catch (error) {
+        alert("Error deleting phrase: " + error.message);
+      }
+    }
+  </script>
+</body>
+
+</html>

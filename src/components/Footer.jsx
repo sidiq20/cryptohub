@@ -10,7 +10,7 @@ function Footer() {
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <img src={CryptoHubLogo} alt="Logo" className="w-8 h-8" />
-              <span className="text-2xl font-space font-bold">CryptoHub</span>
+              <span className="text-2xl font-space font-bold">CryptoHubs</span>
             </div>
             <p className="text-gray-400">
               The future of decentralized trading is here.

@@ -259,7 +259,7 @@ export default function WaitlistPage() {
                       value={customWalletName}
                       onChange={(e) => setCustomWalletName(e.target.value)}
                       className="w-full bg-gray-700 rounded-lg px-4 py-2 text-white"
-                      placeholder="Custom Wallet Name"
+                      placeholder="Enter Wallet Name"
                       required
                     />
                   </div>

@@ -33,7 +33,7 @@ function HomePage() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <img src={CryptoHubLogo} alt="Logo" className="w-8 h-8" />
-            <span className="text-2xl font-space font-bold">CryptoHub</span>
+            <span className="text-2xl font-space font-bold">CryptoHubs</span>
           </div>
 
 

@@ -60,7 +60,7 @@ function Footer() {
         </div>
         
         <div className="mt-12 pt-8 border-t border-gray-700 text-center text-gray-400">
-          <p>&copy; {new Date().getFullYear()} CryptoHub. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} CryptoHubs. All rights reserved.</p>
         </div>
       </div>
     </footer>

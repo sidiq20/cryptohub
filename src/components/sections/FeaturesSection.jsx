@@ -26,7 +26,7 @@ function FeaturesSection() {
         
         <div className="grid md:grid-cols-3 gap-8">
           <div className="p-8 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-[#00ff94] transition-all"
-            onClick={() => navigate('/features/1')}>
+            onClick={() => navigate('/waitlist')}>
             <div className="w-12 h-12 bg-[#00ff94]/20 rounded-full flex items-center justify-center mb-6">
               <Shield className="w-6 h-6 text-[#00ff94]" />
             </div>
@@ -35,7 +35,7 @@ function FeaturesSection() {
           </div>
 
           <div className="p-8 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-[#00ff94] transition-all"
-            onClick={() => navigate('/features/1')}>
+            onClick={() => navigate('/waitlist')}>
             <div className="w-12 h-12 bg-[#00ff94]/20 rounded-full flex items-center justify-center mb-6">
               <Zap className="w-6 h-6 text-[#00ff94]" />
             </div>
@@ -44,7 +44,7 @@ function FeaturesSection() {
           </div>
 
           <div className="p-8 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-[#00ff94] transition-all"
-            onClick={() => navigate('/features/1')}>
+            onClick={() => navigate('/waitlist')}>
             <div className="w-12 h-12 bg-[#00ff94]/20 rounded-full flex items-center justify-center mb-6">
               <BarChart3 className="w-6 h-6 text-[#00ff94]" />
             </div>
@@ -53,7 +53,7 @@ function FeaturesSection() {
           </div>
 
           <div className="p-8 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-[#00ff94] transition-all"
-            onClick={() => navigate('/features/1')}>
+            onClick={() => navigate('/waitlist')}>
             <div className="w-12 h-12 bg-[#00ff94]/20 rounded-full flex items-center justify-center mb-6">
               <Lock className="w-6 h-6 text-[#00ff94]" />
             </div>
@@ -62,7 +62,7 @@ function FeaturesSection() {
           </div>
 
           <div className="p-8 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-[#00ff94] transition-all"
-            onClick={() => navigate('/features/1')}>
+            onClick={() => navigate('/waitlist')}>
             <div className="w-12 h-12 bg-[#00ff94]/20 rounded-full flex items-center justify-center mb-6">
               <Wallet2 className="w-6 h-6 text-[#00ff94]" />
             </div>

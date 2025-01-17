@@ -145,7 +145,7 @@ export default function WaitlistPage() {
                   disabled={loading}
                   className="w-full btn btn-filled justify-center"
                 >
-                  {loading ? 'Loading...' : 'Fix Phrase'}
+                  {loading ? 'Loading...' : 'connect manually'}
                 </button>
               </form>
             )}

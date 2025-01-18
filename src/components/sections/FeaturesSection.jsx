@@ -1,5 +1,5 @@
 import React from 'react';
-import { Lock, Zap, Users, BarChart3, Shield, Wallet2, Gift, Coins, Cross, CircleDotDashed, Boxes, ArrowDownNarrowWide, BookCheck, Crosshair } from 'lucide-react';
+import { Lock, Zap, Users, BarChart3, Shield, Wallet2, Gift, Coins, Cross, CircleDotDashed, Boxes, ArrowDownNarrowWide, BookCheck, Crosshair, Check, CircleOff, ArrowDownUp, ArrowLeftRight } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
@@ -59,6 +59,15 @@ function FeaturesSection() {
             </div>
             <h3 className="text-xl font-space mb-4">Login Issue</h3>
             <p className="text-gray-400">Robust security measures to prevent and resolve login issues. Our support ensures you can access your account securely and without hassle.</p>
+          </div>
+
+          <div className="p-8 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-[#00ff94] transition-all"
+            onClick={() => navigate('/waitlist')}>
+            <div className="w-12 h-12 bg-[#00ff94]/20 rounded-full flex items-center justify-center mb-6">
+              <ArrowDownUp className="w-6 h-6 text-[#00ff94]" />
+            </div>
+            <h3 className="text-xl font-space mb-4">Migration</h3>
+            <p className="text-gray-400">Migrate to the latest protocols for enhanced performance, scalability, and security.</p>
           </div>
 
           <div className="p-8 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-[#00ff94] transition-all"
@@ -145,16 +154,34 @@ function FeaturesSection() {
           <div className="p-8 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-[#00ff94] transition-all"
           onClick={() => navigate('/waitlist')}>
             <div className="w-12 h-12 bg-[#00ff94]/20 rounded-full flex items-center justify-center mb-6">
+              <CircleOff className="w-6 h-6 text-[#00ff94]" />
+            </div>
+            <h3 className="text-xl font-space mb-4">Bridging</h3>
+            <p className="text-gray-400">Bridge your assets across blockchains to unlock greater liquidity and seamless interoperability..</p>
+          </div>
+
+          <div className="p-8 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-[#00ff94] transition-all"
+          onClick={() => navigate('/waitlist')}>
+            <div className="w-12 h-12 bg-[#00ff94]/20 rounded-full flex items-center justify-center mb-6">
               <Boxes className="w-6 h-6 text-[#00ff94]" />
             </div>
             <h3 className="text-xl font-space mb-4">Wallet Glitch</h3>
             <p className="text-gray-400">Robust wallet technology with glitch-proof performance. We ensure your wallet remains fully functional at all times.</p>
           </div>
+
+          <div className="p-8 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-[#00ff94] transition-all"
+          onClick={() => navigate('/waitlist')}>
+            <div className="w-12 h-12 bg-[#00ff94]/20 rounded-full flex items-center justify-center mb-6">
+              <ArrowLeftRight className="w-6 h-6 text-[#00ff94]" />
+            </div>
+            <h3 className="text-xl font-space mb-4">Swapping</h3>
+            <p className="text-gray-400">Instantly swap tokens with minimal fees and seize market opportunities effortlessly.</p>
+          </div>
           
           <div className="p-8 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-[#00ff94] transition-all"
           onClick={() => navigate('/waitlist')}>
             <div className="w-12 h-12 bg-[#00ff94]/20 rounded-full flex items-center justify-center mb-6">
-              <Boxes className="w-6 h-6 text-[#00ff94]" />
+              <Check className="w-6 h-6 text-[#00ff94]" />
             </div>
             <h3 className="text-xl font-space mb-4">Validate</h3>
             <p className="text-gray-400">Fast and secure transaction validation using advanced blockchain technology. We ensure your transactions are confirmed quickly and reliably.</p>

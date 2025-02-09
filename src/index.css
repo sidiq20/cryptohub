@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --neon-primary: #00ff94;
+    --neon-secondary: #0ef;
+    --neon-tertiary: #b3ffe6;
+  }
+
+  body {
+    @apply bg-gray-900 text-gray-100 font-inter;
+  }
+
+  /* Define the `font-inter` utility class */
+  .font-inter {
+    font-family: 'Inter', sans-serif;
+  }
+
+  .font-space-grotesk {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105 flex items-center space-x-2;
+  }
+
+  .btn-outline {
+    @apply border-2 border-[#00ff94] hover:border-[#0ef] hover:shadow-[0_0_20px_rgba(0,255,148,0.4)];
+  }
+
+  .btn-filled {
+    @apply bg-gradient-to-r from-[#00ff94] to-[#0ef] text-gray-900 hover:shadow-[0_0_30px_rgba(0,255,148,0.6)];
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#00ff94] via-[#0ef] to-[#b3ffe6] animate-gradient;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-scroll {
+  animation: scroll 20s linear infinite;
+}
+
+.animate-gradient {
+  background-size: 200% auto;
+  animation: gradient 8s linear infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}

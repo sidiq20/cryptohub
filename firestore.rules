@@ -1,0 +1,16 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow admin users to read waitlist data
+    match /waitlist/{document=**} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if true; // Allow anyone to submit to waitlist
+    }
+    
+    // Secure all other paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
